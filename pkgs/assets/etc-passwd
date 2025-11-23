@@ -1,0 +1,3 @@
+root:x:0:0:root:/root:/bin/bash
+neo4j:x:7474:7474:Neo4j:/opt/neo4j:/bin/bash
+
