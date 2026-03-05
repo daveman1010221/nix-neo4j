@@ -27,7 +27,7 @@
 
           # replace these two after first build error prints real SRIs
           srcHash = "sha256-+XzpIVl310RKB92mlQLDwC6dSLqnODk6MrCNBqdxZ0M=";
-          mvnHash = "sha256-WAj2YizhAKKYKKwyf9V157Dd92yGylOJTIpsdE4vWc4=";
+          mvnHash = "sha256-YfIdG3P6BjwsAEtv0ILqyqPFPwEm1iPKgN1VxQZjfJY=";
         };
 
       in {
