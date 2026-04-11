@@ -46,6 +46,13 @@ pkgs.dockerTools.buildLayeredImage {
   name = "nix-neo4j";
   tag  = "latest";
 
+  extraCommands = ''
+    mkdir -p etc
+    install -m0644 ${./assets/etc-passwd}        etc/passwd
+    install -m0644 ${./assets/etc-group}         etc/group
+    install -m0644 ${./assets/etc-nsswitch.conf} etc/nsswitch.conf
+  '';
+
   contents = pkgs.buildEnv {
     name = "neo4j-rootfs";
     paths = [
@@ -61,19 +68,6 @@ pkgs.dockerTools.buildLayeredImage {
     ];
     pathsToLink = [ "/bin" "/opt" "/etc/ssl" ];
   };
-
-  extraCommands = ''
-    mkdir -p etc
-    install -m0644 ${./assets/etc-passwd}        etc/passwd
-    install -m0644 ${./assets/etc-group}         etc/group
-    install -m0644 ${./assets/etc-nsswitch.conf} etc/nsswitch.conf
-    mkdir -p opt/neo4j/data \
-             opt/neo4j/logs \
-             opt/neo4j/run  \
-             opt/neo4j/import \
-             opt/neo4j/plugins \
-             opt/neo4j/conf
-  '';
 
   config = {
     User = "7474:7474";
@@ -95,6 +89,8 @@ pkgs.dockerTools.buildLayeredImage {
       "LANG=en_US.UTF-8"
       "LC_ALL=en_US.UTF-8"
       "LOCALE_ARCHIVE=${locales}/lib/locale/locale-archive"
+      "HOME=/opt/neo4j"
+      "NEO4J_CONF=/var/lib/neo4j/conf"
     ];
 
     Entrypoint = [ "${entrypoint}/bin/neo4j-entrypoint" ];
