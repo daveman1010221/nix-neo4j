@@ -82,6 +82,36 @@ http://localhost:7474
 
 ---
 
+## The initial password
+
+Set `NEO4J_AUTH=neo4j/<password>` and the entrypoint sets that as the `neo4j` user's password on the first start,
+before the server runs, so the first login is not the default `neo4j`/`neo4j` with a demand to change it. It is
+the only thing the image takes from the environment; everything else is configuration.
+
+- It fails closed. A value that is not `neo4j/<password>`, or a password shorter than Neo4j's minimum of 8
+  characters, stops the container with a message. It never falls back to the default credentials.
+- It is applied only while there is no system database, which is the first start. On a later start with existing
+  data it is not applied, and says so: the password is whatever it was changed to (`ALTER USER`), and an
+  environment variable does not overwrite it.
+- Unset or empty does nothing, and Neo4j starts with the default credentials, which must be changed
+  (the query API answers them with HTTP 200 and `Neo.ClientError.Security.CredentialsExpired` in the body; a wrong
+  password is a 401).
+- The password is never printed, and the variable is not passed on to the server.
+
+`tests/auth.sh` runs the built image under podman with a throwaway password and checks each of these. It needs
+podman and curl, not a cluster:
+
+```sh
+nix build -L .#neo4j-image -o result-neo4j-image
+tests/auth.sh
+```
+
+The test gives Neo4j the same directory settings a deployment's `neo4j.conf` does (`server.directories.*`) and a
+`/tmp`, because the image has neither: Neo4j takes its directories from the configuration, not from the
+`NEO4J_DATA` variable the entrypoint exports, and its JNA library needs a writable `/tmp`.
+
+---
+
 ## Overriding Neo4j Version / Upstream Rev
 
 Edit `flake.nix`:
