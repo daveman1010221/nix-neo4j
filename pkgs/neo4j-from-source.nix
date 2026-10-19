@@ -38,7 +38,7 @@ let
         "$stage/META-INF"
 
       # 1) Static browser assets from our Nix-built dist
-      cp -r ${browserAssets}/libexec/neo4j-browser/deps/neo4j-browser/dist/* "$stage/browser/"
+      cp -r ${browserAssets}/lib/node_modules/neo4j-browser/dist/* "$stage/browser/"
 
       # 2) License / notice files from upstream repo root
       cp ${browserAssets.src}/LICENSE      "$stage/browser/LICENSE"
