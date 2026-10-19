@@ -36,8 +36,8 @@ pkgs.stdenv.mkDerivation {
 
   inherit offlineCache;
 
-  # yarnInstallHook installs to $out/libexec by default — preserve that
-  # so neo4j-from-source.nix's ${browserAssets}/libexec/... path still works.
+  # yarnInstallHook installs the package to $out/lib/node_modules/neo4j-browser;
+  # neo4j-from-source.nix copies the built dist from there.
   yarnBuildScript = "build";
 
   # The .src passthrough so neo4j-from-source.nix can still do ${browserAssets.src}
